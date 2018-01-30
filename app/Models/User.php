@@ -28,6 +28,19 @@ class User extends Authenticatable
 		'password', 'remember_token',
 	];
 
+	/**
+	 * 由于一个用户拥有多条微博，因此在用户模型中我们使用了微博动态的复数形式
+	 * @access    public
+	 * @author    zhaoyong
+	 * @copyright ${DATE}
+	 * @param
+	 * @return
+	 */
+	public function statuses()
+	{
+		return  $this->hasMany(Status::class);
+	}
+
 	public static function boot()
 	{
 		parent::boot();
@@ -45,5 +58,11 @@ class User extends Authenticatable
 	public function sendPasswordResetNotification($token)
 	{
 		$this->notify(new ResetPassword($token));
+	}
+
+	public function feed()
+	{
+		return $this->statuses()
+			->orderBy('created_at', 'desc');
 	}
 }
